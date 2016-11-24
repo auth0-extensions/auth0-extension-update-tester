@@ -1,0 +1,23 @@
+{
+  "name": "Auth0 Extension Update Tester",
+  "description": "This extension helps you to test the extension update process",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "storage"
+  ],
+  "background": {
+    "scripts": [ "worker.js" ],
+    "persistent": true
+  },
+  "manifest_version": 2,
+  "browser_action": {
+    "default_title": "This extension helps you to test the extension update process"
+  }
+}
