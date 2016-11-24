@@ -7,4 +7,4 @@
  3. Click on `Load unpacked extension` and select the folder containing the extension.
  4. Refresh the Extensions tab in the dashboard
 
-When this extension is enabled, it will load the [development version of extensions.js](https://cdn.auth0.com/extensions/develop/extensions.json) in the dashboard.
+When this extension is enabled, it will load the [development version of extensions.json](https://cdn.auth0.com/extensions/develop/extensions.json) in the dashboard.
