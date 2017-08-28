@@ -63,6 +63,48 @@ var rewriteResponseHeaders = function (details) {
   };
 };
 
-chrome.webRequest.onBeforeRequest.addListener(rewriteExtensions, { urls: urlFilter }, [ 'blocking' ]);
-chrome.webRequest.onBeforeSendHeaders.addListener(rewriteRequestHeaders, { urls: [devUrl] }, ['blocking', 'requestHeaders']);
-chrome.webRequest.onHeadersReceived.addListener(rewriteResponseHeaders, { urls: [devUrl] }, ['blocking', 'responseHeaders']);
+var enableExtension = function() {
+  chrome.storage.sync.set({ extension_test_state: true });
+  chrome.browserAction.setIcon({ path: 'images/auth0-badge-icon-enabled.png' });
+
+  chrome.webRequest.onBeforeRequest.addListener(rewriteExtensions, { urls: urlFilter }, [ 'blocking' ]);
+  chrome.webRequest.onBeforeSendHeaders.addListener(rewriteRequestHeaders, { urls: [devUrl] }, ['blocking', 'requestHeaders']);
+  chrome.webRequest.onHeadersReceived.addListener(rewriteResponseHeaders, { urls: [devUrl] }, ['blocking', 'responseHeaders']);
+}
+
+var disableExtension = function() {
+  chrome.storage.sync.set({ extension_test_state: false });
+  chrome.browserAction.setIcon({ path: 'images/auth0-badge-icon-disabled.png' });
+
+  chrome.webRequest.onBeforeRequest.removeListener(rewriteExtensions);
+  chrome.webRequest.onBeforeSendHeaders.removeListener(rewriteRequestHeaders);
+  chrome.webRequest.onHeadersReceived.removeListener(rewriteResponseHeaders);
+}
+
+var toggleExtensionState = function () {
+  var stateProperty = 'extension_test_state';
+  chrome.storage.sync.get(stateProperty, function(data) {
+    data = data || {};
+    var wasExtensionEnabled = data.extension_test_state || false;
+    var isExtensionEnabled = !wasExtensionEnabled;
+    
+    // Perform and action on the new state
+    if (isExtensionEnabled) { enableExtension(); } 
+    else { disableExtension(); }
+  });
+};
+
+var loadExtensionState = function () {
+  var stateProperty = 'extension_test_state';
+  chrome.storage.sync.get(stateProperty, function(data) {
+    data = data || {};
+    var isExtensionEnabled = data.extension_test_state || false;
+    
+    // Perform and action on the new state
+    if (isExtensionEnabled) { enableExtension(); } 
+    else { disableExtension(); }
+  });
+};
+
+loadExtensionState();
+chrome.browserAction.onClicked.addListener(toggleExtensionState);

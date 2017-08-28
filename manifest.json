@@ -18,6 +18,7 @@
   },
   "manifest_version": 2,
   "browser_action": {
-    "default_title": "This extension helps you to test the extension update process"
+    "default_title": "This extension helps you to test the extension update process",
+    "default_icon": "images/auth0-badge-icon-disabled.png"
   }
 }
