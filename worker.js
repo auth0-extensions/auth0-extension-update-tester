@@ -11,7 +11,7 @@ var rewriteExtensions = function(details) {
   if (details.url.endsWith(cloudPath) || details.url.endsWith(appliancePath)) {
     console.log('Redirecting extension.json', {
       originalUrl: details.url,
-      destination: devUrl,
+      destination: devUrl + "?t=" + Date.now(),
       applianceDetected: details.url !== devUrl
     });
 
