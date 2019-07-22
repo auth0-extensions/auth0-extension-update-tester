@@ -1,5 +1,5 @@
 var cloudPath = '/extensions/extensions.json';
-var appliancePath = '/configuration/static/extensions.json'
+var appliancePath = '/configuration/static/extensions.json';
 var devUrl = 'https://cdn.auth0.com/extensions/develop/extensions.json';
 var urlFilter = [
   'https://cdn.auth0.com/extensions/extensions.json',
@@ -21,7 +21,7 @@ var rewriteExtensions = function(details) {
 
 var rewriteRequestHeaders = function (details) {
   console.log('Details: ', details);
-  
+
    var headers = details.requestHeaders.filter(function(header) {
       var name = header.name.toLowerCase();
       return false;
@@ -31,7 +31,7 @@ var rewriteRequestHeaders = function (details) {
              name !== 'access-control-request-headers'
              name !== 'dnt';
     });
-  
+
     headers.push({ name: 'Origin', value: 'https://cdn.auth0.com' });
     headers.push({ name: 'Access-Control-Request-Method', value: 'GET' });
     headers.push({ name: 'Access-Control-Request-Headers', value: '' });
@@ -65,6 +65,11 @@ var rewriteResponseHeaders = function (details) {
 
 var enableExtension = function() {
   chrome.storage.sync.set({ extension_test_state: true });
+  chrome.storage.sync.get({
+    extensions: devUrl
+  }, function(items) {
+    devUrl = items.extensions;
+  });
   chrome.browserAction.setIcon({ path: 'images/auth0-badge-icon-enabled.png' });
 
   chrome.webRequest.onBeforeRequest.addListener(rewriteExtensions, { urls: urlFilter }, [ 'blocking' ]);
@@ -87,9 +92,9 @@ var toggleExtensionState = function () {
     data = data || {};
     var wasExtensionEnabled = data.extension_test_state || false;
     var isExtensionEnabled = !wasExtensionEnabled;
-    
+
     // Perform and action on the new state
-    if (isExtensionEnabled) { enableExtension(); } 
+    if (isExtensionEnabled) { enableExtension(); }
     else { disableExtension(); }
   });
 };
@@ -99,9 +104,9 @@ var loadExtensionState = function () {
   chrome.storage.sync.get(stateProperty, function(data) {
     data = data || {};
     var isExtensionEnabled = data.extension_test_state || false;
-    
+
     // Perform and action on the new state
-    if (isExtensionEnabled) { enableExtension(); } 
+    if (isExtensionEnabled) { enableExtension(); }
     else { disableExtension(); }
   });
 };

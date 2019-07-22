@@ -1,7 +1,7 @@
 {
   "name": "Auth0 Extension Update Tester",
   "description": "This extension helps you to test the extension update process",
-  "version": "1.0",
+  "version": "1.1",
   "permissions": [
     "activeTab",
     "webNavigation",
@@ -17,6 +17,7 @@
     "persistent": true
   },
   "manifest_version": 2,
+  "options_page": "options.html",
   "browser_action": {
     "default_title": "This extension helps you to test the extension update process",
     "default_icon": "images/auth0-badge-icon-disabled.png"
