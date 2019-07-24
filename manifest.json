@@ -1,7 +1,7 @@
 {
   "name": "Auth0 Extension Update Tester",
   "description": "This extension helps you to test the extension update process",
-  "version": "1.1",
+  "version": "1.2",
   "permissions": [
     "activeTab",
     "webNavigation",
