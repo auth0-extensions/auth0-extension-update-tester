@@ -1,8 +1,9 @@
 var cloudPath = '/extensions/extensions.json';
 var appliancePath = '/configuration/static/extensions.json';
 var devUrl = 'https://cdn.auth0.com/extensions/develop/extensions.json';
+var cdnUrl = 'https://cdn.auth0.com/extensions/*';
 var urlFilter = [
-  'https://cdn.auth0.com/extensions/extensions.json',
+  cdnUrl,
   'https://*'+appliancePath
 ];
 
@@ -16,6 +17,17 @@ var rewriteExtensions = function(details) {
     });
 
     return { redirectUrl: devUrl };
+  }
+};
+
+var rewriteAssets = function(details) {
+  var isDevAlready = details.url.indexOf('cdn.auth0.com/extensions/develop/') >= 0;
+  var isGallery = details.url.indexOf('extension-gallery.standalone') >= 0;
+  var isExtensionFiles = details.url.endsWith('.css') || details.url.endsWith('.js');
+  if (!isDevAlready && !isGallery && isExtensionFiles) {
+    const redirectUrl = details.url.replace('cdn.auth0.com/extensions/', 'cdn.auth0.com/extensions/develop/');
+
+    return { redirectUrl };
   }
 };
 
@@ -72,6 +84,7 @@ var enableExtension = function() {
   });
   chrome.browserAction.setIcon({ path: 'images/auth0-badge-icon-enabled.png' });
 
+  chrome.webRequest.onBeforeRequest.addListener(rewriteAssets, { urls: urlFilter }, [ 'blocking' ]);
   chrome.webRequest.onBeforeRequest.addListener(rewriteExtensions, { urls: urlFilter }, [ 'blocking' ]);
   chrome.webRequest.onBeforeSendHeaders.addListener(rewriteRequestHeaders, { urls: [devUrl] }, ['blocking', 'requestHeaders']);
   chrome.webRequest.onHeadersReceived.addListener(rewriteResponseHeaders, { urls: [devUrl] }, ['blocking', 'responseHeaders']);
@@ -81,6 +94,7 @@ var disableExtension = function() {
   chrome.storage.sync.set({ extension_test_state: false });
   chrome.browserAction.setIcon({ path: 'images/auth0-badge-icon-disabled.png' });
 
+  chrome.webRequest.onBeforeRequest.removeListener(rewriteAssets);
   chrome.webRequest.onBeforeRequest.removeListener(rewriteExtensions);
   chrome.webRequest.onBeforeSendHeaders.removeListener(rewriteRequestHeaders);
   chrome.webRequest.onHeadersReceived.removeListener(rewriteResponseHeaders);
